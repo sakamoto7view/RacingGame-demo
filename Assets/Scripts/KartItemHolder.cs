@@ -7,6 +7,7 @@ public class KartItemHolder : MonoBehaviour
 {
     public ItemType? currentItem = null; // null = アイテム無し
     public KeyCode useKey = KeyCode.Space; // 発動キー
+    public float decisionDelay = 2f;
 
     private KartController kart;
     public GameObject bananaPrefab;
@@ -29,13 +30,35 @@ public class KartItemHolder : MonoBehaviour
         }
     }
 
-    public void SetItem(ItemType item)
+    // 直接決めるのではなく「抽選開始」に変更
+    public void StartItemDecision()
     {
-        currentItem = item;
-        Debug.Log("アイテム所持: " + item);
-        // UI 更新
-        Debug.Log("item.ToString(): " + item.ToString());
-        itemUI?.SetItem(item.ToString());
+        if (currentItem != null) return; // 既に持ってたら無視
+        StartCoroutine(ItemDecisionCoroutine());
+    }
+
+    private IEnumerator ItemDecisionCoroutine()
+    {
+        // UIにルーレット開始
+        itemUI?.StartDecisionAnimation(decisionDelay);
+
+        Debug.Log("アイテム抽選中...");
+        yield return new WaitForSeconds(decisionDelay);
+
+        // ランダムに決定
+        ItemType decidedItem = GetRandomItem();
+        currentItem = decidedItem;
+        Debug.Log("アイテム決定: " + decidedItem);
+
+        // UIに確定アイテムを渡す
+        itemUI?.SetItem(decidedItem.ToString());
+    }
+
+    private ItemType GetRandomItem()
+    {
+        ItemType[] possibleItems = { ItemType.Boost, ItemType.Banana };
+        int index = Random.Range(0, possibleItems.Length);
+        return possibleItems[index];
     }
 
     private void UseItem(ItemType item)

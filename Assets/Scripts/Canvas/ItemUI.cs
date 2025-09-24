@@ -13,7 +13,46 @@ public class ItemUI : MonoBehaviour
     {
         Debug.Log("SetItem: " + itemName);
         currentItem = itemName;
+        // ルーレットを強制停止
+        if (decisionRoutine != null)
+        {
+            StopCoroutine(decisionRoutine);
+            decisionRoutine = null;
+        }
+        // 確定表示
         UpdateDisplay();
+    }
+    private Coroutine decisionRoutine;
+
+    public void SetDecisionText(string text)
+    {
+        Debug.Log("Decision text: " + text);
+        itemText.text = text;
+    }
+
+    // ルーレット開始
+    public void StartDecisionAnimation(float duration = 2f, float interval = 0.1f)
+    {
+        if (decisionRoutine != null)
+            StopCoroutine(decisionRoutine);
+
+        decisionRoutine = StartCoroutine(DecisionAnimation(duration, interval));
+    }
+
+    private IEnumerator DecisionAnimation(float duration, float interval)
+    {
+        float elapsed = 0f;
+        bool toggle = false;
+
+        while (elapsed < duration)
+        {
+            SetDecisionText(toggle ? "B" : "C");
+            toggle = !toggle;
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+        itemText.text = "";
+        decisionRoutine = null;
     }
 
     // アイテムを使ったら呼ぶ
@@ -33,7 +72,7 @@ public class ItemUI : MonoBehaviour
                 itemText.text = "B";
                 break;
             case "Boost":
-                itemText.text = "⚡";
+                itemText.text = "C";
                 break;
             default:
                 itemText.text = "";

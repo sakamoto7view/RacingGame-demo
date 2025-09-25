@@ -12,7 +12,7 @@ public class RaceManager : MonoBehaviour
     public KartController player;
     public CPULapController cpu;
     public CPUController cpuMover;
-    public int maxLaps = 3;
+    public int maxLaps = 1;
 
     public CinemachinePathBase racePath;
     public List<Racer> racers = new List<Racer>();
@@ -20,7 +20,9 @@ public class RaceManager : MonoBehaviour
 
     private bool raceFinished = false;
     public GameObject finishUI;
+    public GameObject finishRankUI;
     public GameObject retryButton;
+    public GameObject playerRankingUI;
 
     public AudioSource bgmSource;      // ゴール時のBGM再生用
     public AudioSource finishBGM;        // 再生するクリップ
@@ -72,7 +74,9 @@ public class RaceManager : MonoBehaviour
 
         if (finishUI != null && retryButton != null)
         {
+            playerRankingUI.SetActive(false);
             finishUI.SetActive(true);
+            finishRankUI.SetActive(true);
             retryButton.SetActive(true);
         }
 

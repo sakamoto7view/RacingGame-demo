@@ -1,38 +1,61 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; // Text 用
+using UnityEngine.UI;
 
 public class ItemUI : MonoBehaviour
 {
-    public Text itemText; // Canvas に置いた Text をアタッチ
+    public Image itemImage;        // Canvas に置いた Image をアタッチ
+    public Sprite bananaSprite;    // Banana 用スプライト
+    public Sprite boostSprite;     // Boost 用スプライト
 
-    private string currentItem = "";
+    private Coroutine decisionRoutine;
+    private ItemType? currentItem = null;
+    void Awake()
+    {
+        itemImage.enabled = false;
+    }
 
     // アイテムを取得したときに呼ぶ
-    public void SetItem(string itemName)
+    public void SetItem(ItemType item)
     {
-        Debug.Log("SetItem: " + itemName);
-        currentItem = itemName;
+        currentItem = item;
         // ルーレットを強制停止
         if (decisionRoutine != null)
         {
             StopCoroutine(decisionRoutine);
             decisionRoutine = null;
         }
-        // 確定表示
-        UpdateDisplay();
+        if (itemImage != null)
+        {
+            itemImage.enabled = true; // 表示を有効化
+            // 確定表示
+            UpdateDisplay();
+        }
     }
-    private Coroutine decisionRoutine;
 
-    public void SetDecisionText(string text)
+    private void UpdateDisplay()
     {
-        Debug.Log("Decision text: " + text);
-        itemText.text = text;
+        if (itemImage == null) return;
+
+        switch (currentItem)
+        {
+            case ItemType.Banana:
+                itemImage.sprite = bananaSprite;
+                break;
+            case ItemType.Boost:
+                itemImage.sprite = boostSprite;
+                break;
+            default:
+                itemImage.sprite = null;
+                break;
+        }
     }
 
     // ルーレット開始
     public void StartDecisionAnimation(float duration = 2f, float interval = 0.1f)
     {
+        if (itemImage != null)
+            itemImage.enabled = true;
         if (decisionRoutine != null)
             StopCoroutine(decisionRoutine);
 
@@ -46,37 +69,24 @@ public class ItemUI : MonoBehaviour
 
         while (elapsed < duration)
         {
-            SetDecisionText(toggle ? "B" : "C");
+            itemImage.sprite = toggle ? bananaSprite : boostSprite;
             toggle = !toggle;
+
             yield return new WaitForSeconds(interval);
             elapsed += interval;
         }
-        itemText.text = "";
+
         decisionRoutine = null;
     }
 
     // アイテムを使ったら呼ぶ
     public void ClearItem()
     {
-        currentItem = "";
-        UpdateDisplay();
-    }
-
-    private void UpdateDisplay()
-    {
-        if (itemText == null) return;
-
-        switch (currentItem)
+        currentItem = null;
+        if (itemImage != null)
         {
-            case "Banana":
-                itemText.text = "B";
-                break;
-            case "Boost":
-                itemText.text = "C";
-                break;
-            default:
-                itemText.text = "";
-                break;
+            itemImage.sprite = null;
+            itemImage.enabled = false;
         }
     }
 }

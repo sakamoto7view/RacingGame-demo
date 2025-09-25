@@ -6,6 +6,7 @@ public class RankUI : MonoBehaviour
 {
     public RaceManager raceManager;
     public Text rankText;
+    public Text finishRankText;
 
     void Update()
     {
@@ -14,6 +15,7 @@ public class RankUI : MonoBehaviour
             int rank = raceManager.playerRacer.rank;
             int total = raceManager.racers.Count;
             rankText.text = $"{rank}";
+            finishRankText.text = $"{rank}位";
         }
     }
 }

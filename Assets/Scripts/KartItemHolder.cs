@@ -51,7 +51,7 @@ public class KartItemHolder : MonoBehaviour
         Debug.Log("アイテム決定: " + decidedItem);
 
         // UIに確定アイテムを渡す
-        itemUI?.SetItem(decidedItem.ToString());
+        itemUI?.SetItem(decidedItem);
     }
 
     private ItemType GetRandomItem()

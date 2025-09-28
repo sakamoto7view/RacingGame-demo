@@ -25,7 +25,7 @@ public class RaceManager : MonoBehaviour
     public GameObject playerRankingUI;
 
     public AudioSource bgmSource;      // ゴール時のBGM再生用
-    public AudioSource finishBGM;        // 再生するクリップ
+    public AudioSource retryBGM;        // 再生するクリップ
     public AudioSource clapBGM;        // 再生するクリップ
     public AudioSource yeahBGM;        // 再生するクリップ
 
@@ -80,16 +80,16 @@ public class RaceManager : MonoBehaviour
             retryButton.SetActive(true);
         }
 
-        if (bgmSource != null && finishBGM != null && clapBGM != null && yeahBGM != null)
+        if (bgmSource != null && retryBGM != null && clapBGM != null && yeahBGM != null)
         {
             bgmSource.Stop();
-            finishBGM.Play();
             clapBGM.Play();
             yeahBGM.Play();
+            retryBGM.PlayDelayed(1f);
         }
 
         // 3秒待ってから停止処理開始
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
 
         // プレイヤー減速停止
         player.StopGradually(3f);
@@ -102,12 +102,6 @@ public class RaceManager : MonoBehaviour
         else if (cpuMover != null)
         {
             cpuMover.canMove = false;
-        }
-
-        // ここで順位を表示する処理を呼ぶのもアリ
-        foreach (var r in racers)
-        {
-            Debug.Log($"{r.name}: Rank {r.rank}");
         }
     }
 

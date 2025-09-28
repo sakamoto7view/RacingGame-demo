@@ -6,10 +6,7 @@ using Cinemachine;
 [System.Serializable]
 public class Racer
 {
-    public string name;                 // 名前表示用
     public Transform kartTransform;     // プレイヤーやCPUの実体
-    public CinemachineDollyCart cpuCart; // CPUならここに設定（プレイヤーは null）
-
     public int lapCount = 0;
     public float progressOnPath = 0f;   // 0~1
     public int rank = 0;
@@ -20,7 +17,10 @@ public class Racer
     {
         float posOnPath = path.FindClosestPoint(kartTransform.position, 0, -1, 1000);
         progressOnPath = posOnPath / path.PathLength;
-        TotalProgress = lapCount + progressOnPath;
+
+        // 距離ベースの進捗
+        float distance = posOnPath; // コース上の位置（単位:メートル）
+        TotalProgress = lapCount * path.PathLength + distance;
     }
 
     // === 順位計算 ===

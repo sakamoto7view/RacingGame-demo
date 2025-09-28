@@ -15,6 +15,8 @@ public class KartItemHolder : MonoBehaviour
     // UI
     public ItemUI itemUI;
 
+    public AudioSource dropSE;
+
     void Awake()
     {
         kart = GetComponent<KartController>();
@@ -77,7 +79,8 @@ public class KartItemHolder : MonoBehaviour
 
     void DropBanana()
     {
-        Vector3 spawnPos = transform.position - transform.forward * 2f;
+        dropSE.Play();
+        Vector3 spawnPos = transform.position - transform.forward * 2.5f;
         Quaternion spawnRot = Quaternion.identity;
         Instantiate(bananaPrefab, spawnPos, spawnRot);
     }

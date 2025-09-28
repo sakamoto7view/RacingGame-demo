@@ -12,11 +12,15 @@ public class CountdownUI : MonoBehaviour
 
     public AudioSource bgmSource;         // BGM専用
     public AudioSource countdownSource;         // カウント音専用
+    public float countdownDelay = 3f;
+    public float bgmDelay = 8f;
     bool hasPlayedSound = false;
 
     void Start()
     {
         StartCoroutine(CountdownToStart());
+        // countdownSource.PlayDelayed(countdownDelay);
+        bgmSource.PlayDelayed(bgmDelay);
     }
 
     IEnumerator CountdownToStart()
@@ -54,10 +58,10 @@ public class CountdownUI : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        if (bgmSource != null)
-        {
-            bgmSource.Play();
-        }
+        // if (bgmSource != null)
+        // {
+        //     bgmSource.Play();
+        // }
 
         // 表示消す
         countdownText.text = "";
